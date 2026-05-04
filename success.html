@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Received — Crescent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .success-container {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(32, 96, 255, 0.1);
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease-out;
+        }
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--accent);
+            stroke-width: 3;
+            fill: none;
+        }
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .success-title {
+            font-size: 28px;
+            margin: 0 0 15px;
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .success-message {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .success-message strong { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-container">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h1 class="success-title">Submission Received!</h1>
+            <p class="success-message">
+                Thank you for your submission. We'll send the <strong>scheduling confirmation</strong> shortly once we've reviewed your request.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

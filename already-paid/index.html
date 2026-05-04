@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crescent — Premiere Submission (Already Paid)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="banner-wrapper">
+            <img src="../src/crescent-logo-white.png" alt="Crescent" class="banner-image" style="max-width:260px;">
+        </div>
+        <h1>Premiere Submission</h1>
+        <p>Schedule your release on our channels.</p>
+    </header>
+
+    <form id="submissionForm">
+        <input type="hidden" name="product" id="productInput" value="Already Paid (EUR 0)">
+        <input type="hidden" name="isHypeddit" id="isHypedditInput" value="FALSE">
+
+        <!-- Requester -->
+        <div class="form-section">
+            <h3 class="section-title">Requester Details</h3>
+            <div class="row">
+                <div class="col">
+                    <label>
+                        Your Email
+                        <span class="info-btn" data-tooltip="We'll use this to send you confirmation and updates about your submission">&#9432;</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="email" name="requesterEmail" required placeholder="contact@you.com">
+                </div>
+                <div class="col">
+                    <label>
+                        Emails for Calendar Invites
+                        <span class="info-btn" data-tooltip="Additional emails to receive calendar invites (separate multiple with commas)">&#9432;</span>
+                    </label>
+                    <input type="text" name="calendarEmails" placeholder="email1@.com, email2@.com">
+                </div>
+            </div>
+        </div>
+
+        <!-- Artist 1 -->
+        <div class="form-section">
+            <h3 class="section-title">Artist 1 (Mandatory)</h3>
+            <label>
+                Name
+                <span class="info-btn" data-tooltip="The primary artist name as you want it displayed">&#9432;</span>
+                <span class="required">*</span>
+            </label>
+            <input type="text" name="artist1Name" required>
+
+            <div class="row">
+                <div class="col">
+                    <label>
+                        Instagram Handle
+                        <span class="info-btn" data-tooltip="Enter @username, full URL, or just the handle — we'll normalize it">&#9432;</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" name="artist1IG" class="handle-input" data-platform="ig" required placeholder="@artist">
+                </div>
+                <div class="col">
+                    <label>
+                        SoundCloud Handle
+                        <span class="info-btn" data-tooltip="Enter username, full URL, or just the handle — we'll normalize it">&#9432;</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" name="artist1SC" class="handle-input" data-platform="sc" required placeholder="artist">
+                </div>
+            </div>
+
+            <label>
+                Email for Calendar Invites
+                <span class="info-btn" data-tooltip="Artist's email to receive the calendar invite for the premiere">&#9432;</span>
+                <span class="required">*</span>
+            </label>
+            <input type="email" name="artist1Email" required placeholder="artist@email.com">
+        </div>
+
+        <!-- Artist 2 -->
+        <div class="form-section" id="artist2Section" style="display: none;">
+            <h3 class="section-title">Artist 2 (Optional)</h3>
+            <label>Name <span class="info-btn" data-tooltip="Feature artist or remixer name">&#9432;</span></label>
+            <input type="text" name="artist2Name">
+            <div class="row">
+                <div class="col">
+                    <label>Instagram Handle <span class="info-btn" data-tooltip="Enter @username, full URL, or just the handle — we'll normalize it">&#9432;</span></label>
+                    <input type="text" name="artist2IG" class="handle-input" data-platform="ig" placeholder="@artist">
+                </div>
+                <div class="col">
+                    <label>SoundCloud Handle <span class="info-btn" data-tooltip="Enter username, full URL, or just the handle — we'll normalize it">&#9432;</span></label>
+                    <input type="text" name="artist2SC" class="handle-input" data-platform="sc" placeholder="artist">
+                </div>
+            </div>
+            <label>Email for Calendar Invites <span class="info-btn" data-tooltip="Artist 2's email to receive calendar invite">&#9432;</span></label>
+            <input type="email" name="artist2Email" placeholder="artist@email.com">
+        </div>
+
+        <button type="button" id="addArtist2Btn" class="btn-secondary" onclick="toggleArtist2()">
+            <span class="btn-icon">+</span> Add a 2nd Artist or Remixer
+        </button>
+
+        <!-- Label -->
+        <div class="form-section">
+            <h3 class="section-title">Record Label</h3>
+            <label>Label Name <span class="info-btn" data-tooltip="The record label releasing this track (if applicable)">&#9432;</span></label>
+            <input type="text" name="labelName">
+            <div class="row">
+                <div class="col">
+                    <label>Instagram Handle <span class="info-btn" data-tooltip="Label's Instagram — enter any format, we'll fix it">&#9432;</span></label>
+                    <input type="text" name="labelIG" class="handle-input" data-platform="ig" placeholder="@label">
+                </div>
+                <div class="col">
+                    <label>SoundCloud Handle <span class="info-btn" data-tooltip="Label's SoundCloud — enter any format, we'll fix it">&#9432;</span></label>
+                    <input type="text" name="labelSC" class="handle-input" data-platform="sc" placeholder="label">
+                </div>
+            </div>
+        </div>
+
+        <!-- Release Info -->
+        <div class="form-section">
+            <h3 class="section-title">Release Info</h3>
+            <label>Track Title <span class="info-btn" data-tooltip="The official title of your track">&#9432;</span> <span class="required">*</span></label>
+            <input type="text" name="trackTitle" required>
+
+            <div class="row">
+                <div class="col">
+                    <label>Catalog Number <span class="info-btn" data-tooltip="The unique identifier for your release (e.g., CRS001)">&#9432;</span></label>
+                    <input type="text" name="catalogNumber">
+                </div>
+                <div class="col">
+                    <label>ISRC <span class="info-btn" data-tooltip="International Standard Recording Code">&#9432;</span></label>
+                    <input type="text" name="isrc">
+                </div>
+            </div>
+
+            <label>Tracklist <span class="info-btn" data-tooltip="List all tracks if this is a multi-track release.">&#9432;</span></label>
+            <textarea name="tracklist" rows="3" placeholder="1. Track Name (feat. Artist)&#10;2. Track Name&#10;3. ..."></textarea>
+
+            <label>Track Description <span class="info-btn" data-tooltip="Describe the track, genre, mood and style.">&#9432;</span> <span class="required">*</span></label>
+            <textarea name="description" rows="4" required placeholder="Example: A deep, atmospheric techno track with rolling basslines..."></textarea>
+
+            <label>15 Second Extract — Most Impactful Moment <span class="info-btn" data-tooltip="Select the timestamp where the track is most impactful.">&#9432;</span></label>
+            <div class="timestamp-selector">
+                <input type="range" id="extractSlider" min="0" max="600" value="0" step="1" oninput="updateTimestampDisplay(this.value)">
+                <div class="timestamp-display">
+                    <input type="number" id="extractMinutes" min="0" max="10" value="0" onchange="updateFromFields()" placeholder="0">
+                    <span class="timestamp-separator">:</span>
+                    <input type="number" id="extractSeconds" min="0" max="59" value="0" onchange="updateFromFields()" placeholder="00">
+                </div>
+                <input type="hidden" name="extractTimestamp" id="extractTimestamp" value="0000">
+            </div>
+
+            <label>Official Release Date <span class="info-btn" data-tooltip="When the track officially releases on all platforms">&#9432;</span></label>
+            <input type="text" name="releaseDate" class="flatpickr-input" placeholder="Select a date...">
+
+            <div class="checkbox-wrapper">
+                <input type="checkbox" id="hypedditCheck">
+                <label for="hypedditCheck">
+                    I would like Crescent to setup a free download gate via Hypeddit
+                    <span class="info-btn" data-tooltip="Creates a free download page where fans follow your socials to get the track">&#9432;</span>
+                </label>
+            </div>
+
+            <div id="hypedditChannels" style="display: none;">
+                <h4 class="subsection-title">Additional Channels to Follow</h4>
+                <p class="helper-text">Add up to 3 SoundCloud and Instagram handles for fans to follow via the download gate.</p>
+                <div class="dynamic-list-section">
+                    <label>SoundCloud Handles <span class="info-btn" data-tooltip="SoundCloud accounts fans must follow to download">&#9432;</span></label>
+                    <div id="scHandlesContainer">
+                        <div class="dynamic-row">
+                            <input type="text" name="additionalSC_1" class="handle-input dynamic-handle" data-platform="sc" placeholder="soundcloud-handle">
+                            <button type="button" class="btn-add-row" onclick="addDynamicRow('sc')">+</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="additionalSC" id="additionalSC">
+                </div>
+                <div class="dynamic-list-section">
+                    <label>Instagram Handles <span class="info-btn" data-tooltip="Instagram accounts fans must follow to download">&#9432;</span></label>
+                    <div id="igHandlesContainer">
+                        <div class="dynamic-row">
+                            <input type="text" name="additionalIG_1" class="handle-input dynamic-handle" data-platform="ig" placeholder="@instagram-handle">
+                            <button type="button" class="btn-add-row" onclick="addDynamicRow('ig')">+</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="additionalIG" id="additionalIG">
+                </div>
+            </div>
+
+            <label>Buy / Pre-order Link <span class="info-btn" data-tooltip="Link to purchase/pre-order the track">&#9432;</span> <span class="required">*</span></label>
+            <input type="url" name="buyLink" id="buyLinkField" required placeholder="https://...">
+        </div>
+
+        <!-- Credits -->
+        <div class="form-section">
+            <h3 class="section-title">Credits</h3>
+            <div class="row">
+                <div class="col">
+                    <label>Mastering Credits <span class="info-btn" data-tooltip="Who mastered this track?">&#9432;</span></label>
+                    <input type="text" name="masteringCredits">
+                </div>
+                <div class="col">
+                    <label>Artwork Credits <span class="info-btn" data-tooltip="Who created the artwork?">&#9432;</span></label>
+                    <input type="text" name="artworkCredits">
+                </div>
+            </div>
+        </div>
+
+        <!-- Assets -->
+        <div class="form-section">
+            <h3 class="section-title">Assets</h3>
+            <label>Audio File (WAV/MP3) <span class="info-btn" data-tooltip="Upload your track in WAV or MP3 format. WAV preferred.">&#9432;</span> <span class="required">*</span></label>
+            <div id="audio-dropzone" class="dropzone"></div>
+            <label>Artwork (JPG/PNG, 1:1 Ratio) <span class="info-btn" data-tooltip="Square image for the track. Will be rejected if not 1:1 ratio.">&#9432;</span> <span class="required">*</span></label>
+            <div id="artwork-dropzone" class="dropzone"></div>
+        </div>
+
+        <!-- Scheduling -->
+        <div class="form-section">
+            <h3 class="section-title">Scheduling</h3>
+            <label>Premiere Date <span class="info-btn" data-tooltip="Select an available date for your premiere on our channels">&#9432;</span> <span class="required">*</span></label>
+            <input type="text" name="premiereDate" id="calendarInput" required placeholder="Select an available date..." readonly>
+        </div>
+
+        <button type="submit" id="submitBtn">
+            <span class="btn-text">Submit Form</span>
+            <span class="btn-arrow">→</span>
+        </button>
+        <p class="status-msg" id="statusMsg"></p>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

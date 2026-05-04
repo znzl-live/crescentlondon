@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crescent Admin — Pre-fill Link Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="admin-badge">Admin — Crescent</div>
+        <h1>Pre-fill Link Generator</h1>
+        <p>Fill in any fields below to generate a pre-filled submission URL.</p>
+    </header>
+
+    <!-- Target Form Selector -->
+    <div class="form-section">
+        <h3 class="section-title">Target Form</h3>
+        <div class="target-selector">
+            <div class="target-card selected" id="target-main" onclick="selectTarget('main')">
+                <h4>Main Form</h4>
+                <p>Standard submission with payment (€15 / €30)</p>
+            </div>
+            <div class="target-card" id="target-already-paid" onclick="selectTarget('already-paid')">
+                <h4>Already Paid</h4>
+                <p>Free submission for approved users</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requester -->
+    <div class="form-section">
+        <h3 class="section-title">Requester Details</h3>
+        <div class="row">
+            <div class="col">
+                <label>Your Email</label>
+                <input type="email" id="requesterEmail" placeholder="contact@you.com">
+            </div>
+            <div class="col">
+                <label>Emails for Calendar Invites</label>
+                <input type="text" id="calendarEmails" placeholder="email1@.com, email2@.com">
+            </div>
+        </div>
+    </div>
+
+    <!-- Artist 1 -->
+    <div class="form-section">
+        <h3 class="section-title">Artist 1</h3>
+        <label>Name</label>
+        <input type="text" id="artist1Name" placeholder="Artist name">
+        <div class="row">
+            <div class="col">
+                <label>Instagram Handle</label>
+                <input type="text" id="artist1IG" class="handle-input" placeholder="@artist">
+            </div>
+            <div class="col">
+                <label>SoundCloud Handle</label>
+                <input type="text" id="artist1SC" class="handle-input" placeholder="artist">
+            </div>
+        </div>
+        <label>Email for Calendar Invites</label>
+        <input type="email" id="artist1Email" placeholder="artist@email.com">
+    </div>
+
+    <!-- Artist 2 -->
+    <div class="form-section">
+        <h3 class="section-title">Artist 2 <span style="font-size:13px; font-weight:400; color:var(--text-muted)">(Optional)</span></h3>
+        <label>Name</label>
+        <input type="text" id="artist2Name" placeholder="Feature artist or remixer">
+        <div class="row">
+            <div class="col">
+                <label>Instagram Handle</label>
+                <input type="text" id="artist2IG" class="handle-input" placeholder="@artist">
+            </div>
+            <div class="col">
+                <label>SoundCloud Handle</label>
+                <input type="text" id="artist2SC" class="handle-input" placeholder="artist">
+            </div>
+        </div>
+        <label>Email for Calendar Invites</label>
+        <input type="email" id="artist2Email" placeholder="artist@email.com">
+    </div>
+
+    <!-- Label -->
+    <div class="form-section">
+        <h3 class="section-title">Record Label <span style="font-size:13px; font-weight:400; color:var(--text-muted)">(Optional)</span></h3>
+        <label>Label Name</label>
+        <input type="text" id="labelName" placeholder="Label name">
+        <div class="row">
+            <div class="col">
+                <label>Instagram Handle</label>
+                <input type="text" id="labelIG" class="handle-input" placeholder="@label">
+            </div>
+            <div class="col">
+                <label>SoundCloud Handle</label>
+                <input type="text" id="labelSC" class="handle-input" placeholder="label">
+            </div>
+        </div>
+    </div>
+
+    <!-- Release Info -->
+    <div class="form-section">
+        <h3 class="section-title">Release Info</h3>
+        <label>Track Title <span class="required">*</span></label>
+        <input type="text" id="trackTitle" placeholder="Track title">
+        <div class="row">
+            <div class="col">
+                <label>Catalog Number</label>
+                <input type="text" id="catalogNumber" placeholder="CRS001">
+            </div>
+            <div class="col">
+                <label>ISRC</label>
+                <input type="text" id="isrc" placeholder="GBUM71234567">
+            </div>
+        </div>
+        <label>Tracklist</label>
+        <textarea id="tracklist" rows="3" placeholder="1. Track Name (feat. Artist)&#10;2. Track Name"></textarea>
+        <label>Track Description</label>
+        <textarea id="description" rows="4" placeholder="Describe the track, genre, mood..."></textarea>
+        <div class="row">
+            <div class="col">
+                <label>Official Release Date</label>
+                <input type="text" id="releaseDate" placeholder="e.g. 2026-03-15">
+            </div>
+            <div class="col">
+                <label>Buy / Pre-order Link</label>
+                <input type="url" id="buyLink" placeholder="https://...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits -->
+    <div class="form-section">
+        <h3 class="section-title">Credits</h3>
+        <div class="row">
+            <div class="col">
+                <label>Mastering Credits</label>
+                <input type="text" id="masteringCredits" placeholder="Mastered by XXX">
+            </div>
+            <div class="col">
+                <label>Artwork Credits</label>
+                <input type="text" id="artworkCredits" placeholder="Artwork by XXX">
+            </div>
+        </div>
+    </div>
+
+    <!-- URL Output -->
+    <div class="url-output-section">
+        <div class="url-output-label">Generated URL</div>
+        <div class="param-count" id="paramCount"><span>0</span> fields pre-filled</div>
+        <div class="url-display" id="urlDisplay">
+            <span class="url-empty">Fill in any fields above to generate a link...</span>
+        </div>
+        <div class="url-actions">
+            <button class="btn-copy" id="copyBtn" onclick="copyUrl()">
+                <span id="copyIcon">&#x2398;</span>
+                <span id="copyText">Copy Link</span>
+            </button>
+            <button class="btn-open" onclick="openUrl()">Open ↗</button>
+            <button class="btn-reset" onclick="resetForm()">Reset</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

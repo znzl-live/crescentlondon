@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crescent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(ellipse at top, rgba(32, 96, 255, 0.06) 0%, transparent 60%);
+        }
+
+        .home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.5rem;
+            padding: 2rem;
+        }
+
+        .logo {
+            width: min(320px, 85vw);
+            height: auto;
+            display: block;
+        }
+
+        .request-btn {
+            display: inline-block;
+            padding: 0.85rem 2.2rem;
+            background: transparent;
+            color: #2060ff;
+            border: 1.5px solid #2060ff;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .request-btn:hover {
+            background: #2060ff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="home">
+        <img src="src/crescent-logo-white.png" alt="Crescent" class="logo">
+        <a class="request-btn" href="mailto:promo@crescentlondon.uk">Request a Premiere</a>
+    </div>
+</body>
+</html>
