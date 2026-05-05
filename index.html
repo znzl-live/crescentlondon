@@ -4,19 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crescent</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Cindie Mono C';
+            src: url('src/fonts/CindieMonoC.woff2') format('woff2'),
+                 url('src/fonts/CindieMonoC.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: #000000;
-            color: #ffffff;
-            font-family: 'Space Grotesk', sans-serif;
+            background: #ffffff;
+            color: #0a0a14;
+            font-family: 'Cindie Mono C', 'Courier New', monospace;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: radial-gradient(ellipse at top, rgba(32, 96, 255, 0.06) 0%, transparent 60%);
+            background-image: radial-gradient(ellipse at top, rgba(32, 96, 255, 0.04) 0%, transparent 60%);
         }
 
         .home {
@@ -40,7 +47,7 @@
             color: #2060ff;
             border: 1.5px solid #2060ff;
             border-radius: 6px;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Cindie Mono C', 'Courier New', monospace;
             font-size: 0.95rem;
             font-weight: 500;
             letter-spacing: 0.04em;
@@ -57,7 +64,7 @@
 </head>
 <body>
     <div class="home">
-        <img src="src/crescent-logo-white.png" alt="Crescent" class="logo">
+        <img src="src/crescent-logo-black.png" alt="Crescent" class="logo">
         <a class="request-btn" href="mailto:promo@crescentlondon.uk">Request a Premiere</a>
     </div>
 </body>
