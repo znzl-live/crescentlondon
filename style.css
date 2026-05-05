@@ -28,7 +28,7 @@
 body {
     background-color: var(--bg);
     color: var(--text);
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     margin: 0;
     padding: 20px;
     display: flex;
@@ -60,7 +60,7 @@ body {
 .header h1 {
     margin: 0;
     font-size: 32px;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     font-weight: 700;
     color: var(--text);
     letter-spacing: -0.5px;
@@ -159,13 +159,13 @@ body {
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
 }
 .price {
     font-weight: 700;
     color: var(--accent);
     font-size: 18px;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
 }
 .option-card p {
     margin: 0;
@@ -197,7 +197,7 @@ body {
     margin-top: 0;
     margin-bottom: 24px;
     font-size: 18px;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     font-weight: 600;
     color: var(--text);
     border-bottom: 1px solid var(--border);
@@ -581,7 +581,7 @@ button {
     border-radius: 12px;
     font-size: 15px;
     font-weight: 700;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     text-transform: none;
     letter-spacing: 0.5px;
     cursor: pointer;
@@ -796,7 +796,7 @@ button:hover .btn-arrow { transform: translateX(4px); }
     text-align: center;
     font-size: 16px;
     font-weight: 600;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     color: var(--accent);
     background: var(--input-bg);
     border: 1px solid var(--border);
@@ -870,7 +870,7 @@ button:hover .btn-arrow { transform: translateX(4px); }
 
 .target-card h4 {
     margin: 0 0 4px;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
     color: var(--text);
@@ -908,7 +908,7 @@ button:hover .btn-arrow { transform: translateX(4px); }
     word-break: break-all;
     line-height: 1.6;
     min-height: 44px;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     margin-bottom: 12px;
     user-select: all;
 }
@@ -929,7 +929,7 @@ button:hover .btn-arrow { transform: translateX(4px); }
     border-radius: 10px;
     font-size: 14px;
     font-weight: 700;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-top: 0;
@@ -957,7 +957,7 @@ button:hover .btn-arrow { transform: translateX(4px); }
     border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-top: 0;
@@ -983,7 +983,7 @@ button:hover .btn-arrow { transform: translateX(4px); }
     border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
-    font-family: 'Cindie Mono C', 'Courier New', monospace;
+    font-family: 'Cindie Mono C', 'Inter', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
     margin-top: 0;
