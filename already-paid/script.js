@@ -1,5 +1,5 @@
 // CONFIGURATION — update after n8n workflows are deployed
-const APPS_SCRIPT_URL = "CRESCENT_APPS_SCRIPT_URL_HERE"; // Apps Script Web App URL
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypbMreupaBaoJjMXS4TsNRbKsh7RBcNOWGTl2H36noZ8v09LJj7LH3OCnxs5QDhv_t/exec"; // Apps Script Web App URL
 const N8N_WEBHOOK_URL = "https://n8n.znzl.live/webhook/free-submission-crescent-a3f8b291-7c4e-4d9a-b852-1e6f3c2d8a45";
 
 Dropzone.autoDiscover = false;
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const calendarInput = document.getElementById('calendarInput');
     let availableDates = [];
     try {
-        const response = await fetch(APPS_SCRIPT_URL + '?action=getSlots');
+        const response = await fetch(APPS_SCRIPT_URL + '?type=crescent');
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
             availableDates = data.map(d => {
