@@ -1,6 +1,6 @@
 // CONFIGURATION — update after n8n workflows are deployed
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypbMreupaBaoJjMXS4TsNRbKsh7RBcNOWGTl2H36noZ8v09LJj7LH3OCnxs5QDhv_t/exec"; // Apps Script Web App URL
-const N8N_WEBHOOK_URL = "https://n8n.znzl.live/webhook/free-submission-crescent-a3f8b291-7c4e-4d9a-b852-1e6f3c2d8a45";
+const N8N_WEBHOOK_URL = "https://n8n.znzl.live/webhook/crescent-free-submission-1447f214-c043-4a3b-97b7-453c1ba26895";
 
 Dropzone.autoDiscover = false;
 
@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     audioDropzone = new Dropzone("#audio-dropzone", {
-        url: "#", paramName: "audioFile", acceptedFiles: ".wav,.mp3",
+        url: "#", paramName: "audioFile", acceptedFiles: ".wav,.aif,.aiff",
         maxFiles: 1, autoProcessQueue: false, addRemoveLinks: true,
-        dictDefaultMessage: "Drop your WAV or MP3 file here, or click to select.",
+        dictDefaultMessage: "Drop your WAV or AIFF file here, or click to select.",
         init: function() {
             this.on("maxfilesexceeded", function(file) { this.removeAllFiles(); this.addFile(file); });
             this.on("addedfile", function(file) { file.previewElement.classList.add("audio-file"); });
