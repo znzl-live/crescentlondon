@@ -1,5 +1,5 @@
 // CONFIGURATION — update after n8n workflows are deployed
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypbMreupaBaoJjMXS4TsNRbKsh7RBcNOWGTl2H36noZ8v09LJj7LH3OCnxs5QDhv_t/exec"; // Apps Script Web App URL
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGHI4m18BZBMkLwcXEL-kqoAiQhpYzRF8st_nmjA2jUnsQ3K6r9XLvZjaUnJLPIrd6/exec"; // Apps Script Web App URL
 const N8N_WEBHOOK_URL = "https://n8n.znzl.live/webhook/crescent-submit-premiere"; // n8n Webhook URL
 
 Dropzone.autoDiscover = false;
