@@ -1,0 +1,3307 @@
+{
+  "updatedAt": "2026-05-05T08:01:05.896Z",
+  "createdAt": "2026-02-11T18:48:16.610Z",
+  "name": "Crescent Service - Payment Confirmation",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crescent-submit-premiere",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryData": false
+        }
+      },
+      "id": "faa3f054-1ea9-4c5c-a98a-4011ef4d332f",
+      "name": "Webhook (Form Submit)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        3760
+      ],
+      "notesInFlow": true,
+      "webhookId": "361ad46b-32c0-4e18-a07f-67d7f9134125",
+      "notes": "Receives FormData",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "={{ $json.body.premiereDate.replaceAll('-', '') }} - {{ $json.body.artist1Name }} - {{ $json.body.trackTitle }} ({{ $json.body.catalogNumber }})",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "CRESCENT_INCOMING_FOLDER_ID",
+          "mode": "list",
+          "cachedResultName": "01. Incoming (Crescent)",
+          "cachedResultUrl": ""
+        },
+        "options": {}
+      },
+      "id": "51023570-d858-409e-a389-1b44de21d9fe",
+      "name": "Create Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -576,
+        3696
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5ws9gkeaNmvhs7GO",
+          "name": "Laburnum"
+        }
+      },
+      "notes": "Creates Folder"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "231889ad-9598-497c-934a-c965225c1d67",
+      "name": "Merge Context",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -352,
+        3760
+      ],
+      "notesInFlow": true,
+      "notes": "Combines Folder ID + Files",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "audioFile",
+        "name": "={{ $json.body.artist1Name }} - {{ $json.body.trackTitle }} (Audio) - {{ $json.body.extractTimestamp }}.{{ $binary.audioFile.fileExtension }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "131ddb8b-b693-48b9-80d7-57871258e00d",
+      "name": "Upload Audio",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        3664
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5ws9gkeaNmvhs7GO",
+          "name": "Laburnum"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "artworkFile",
+        "name": "={{ $('Webhook (Form Submit)').item.json.body.artist1Name }} - {{ $('Webhook (Form Submit)').item.json.body.trackTitle }} (Artwork).{{ $binary.artworkFile.fileExtension }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Create Folder').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "e33cf8fd-90fe-4b0e-913f-61fa08213723",
+      "name": "Upload Artwork",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -128,
+        3856
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "5ws9gkeaNmvhs7GO",
+          "name": "Laburnum"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "bb5236be-ffac-40b5-8e24-09f6824e5f78",
+      "name": "Merge Uploads",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        96,
+        3760
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w",
+          "mode": "list",
+          "cachedResultName": "Pipeline",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Track Name": "={{ $('Webhook (Form Submit)').item.json.body.trackTitle }}",
+            "Artist 1 Name": "={{ $('Webhook (Form Submit)').item.json.body.artist1Name }}",
+            "Artist 1 Instagram Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist1IG || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+            "Artist 1 SoundCloud Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist1SC || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+            "Artist 1 Email": "={{ $('Webhook (Form Submit)').item.json.body.artist1Email }}",
+            "Artist 2 Name": "={{ $('Webhook (Form Submit)').item.json.body.artist2Name }}",
+            "Artist 2 Instagram Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist2IG || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+            "Artist 2 SoundCloud Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist2SC || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+            "Artist 2 Email": "={{ $('Webhook (Form Submit)').item.json.body.artist2Email }}",
+            "Record Label": "={{ $('Webhook (Form Submit)').item.json.body.labelName }}",
+            "Label Instagram Handle": "={{ ($('Webhook (Form Submit)').item.json.body.labelIG || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+            "Label SoundCloud Handle": "={{ ($('Webhook (Form Submit)').item.json.body.labelSC || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+            "Requester Email": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}",
+            "Other emails for calendar invites": "={{ $('Webhook (Form Submit)').item.json.body.calendarEmails }}",
+            "Submitted at": "={{ new Date().toISOString() }}",
+            "Tracklist": "={{ $('Webhook (Form Submit)').item.json.body.tracklist }}",
+            "Track Description": "={{ $('Webhook (Form Submit)').item.json.body.description }}",
+            "Release Date": "={{ $('Webhook (Form Submit)').item.json.body.releaseDate }}",
+            "Mastering Credits": "={{ $('Webhook (Form Submit)').item.json.body.masteringCredits }}",
+            "Artwork Credits": "={{ $('Webhook (Form Submit)').item.json.body.artworkCredits }}",
+            "Catalog Number": "={{ $('Webhook (Form Submit)').item.json.body.catalogNumber }}",
+            "ISRC": "={{ $('Webhook (Form Submit)').item.json.body.isrc }}",
+            "Buy Link": "={{ $('Webhook (Form Submit)').item.json.body.buyLink }}",
+            "Is Hypeddit?": "={{ $('Webhook (Form Submit)').item.json.body.isHypeddit }}",
+            "Additional SC To Follow": "={{ $('Webhook (Form Submit)').item.json.body.additionalSC }}",
+            "Additional IG To Follow": "={{ $('Webhook (Form Submit)').item.json.body.additionalIG }}",
+            "Premiere Date": "={{ $('Webhook (Form Submit)').item.json.body.premiereDate }}",
+            "Track link": "={{ $('Upload Audio').item.json.webViewLink }}",
+            "Artwork link": "={{ $('Upload Artwork').item.json.webViewLink }}",
+            "Option": "={{ $('Webhook (Form Submit)').item.json.body.product }}",
+            "Status": "Requested",
+            "Drive URL": "=https://drive.google.com/drive/folders/{{ $('Create Folder').item.json.id }}",
+            "Extract Timestamp": "={{ $('Webhook (Form Submit)').item.json.body.extractTimestamp }}",
+            "Soundcloud Description": "==LET(\n  label_val, XLOOKUP(\"Record Label\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  is_whitelab, label_val = \"WHITELAB\",\n  hypeddit_url, XLOOKUP(\"Hypeddit URL\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  \n  TEXTJOIN(CHAR(10), TRUE, \n    IF(is_whitelab, \"FREE DOWNLOAD: \" & hypeddit_url, IFERROR(1/0)),\n    IF(is_whitelab, \" \", IFERROR(1/0)),\n    IF(is_whitelab, \"𝐖𝐇𝐈𝐓𝐄𝐋𝐀𝐁 \", \"\") & \"𝐏𝐑𝐄𝐌𝐈𝐄𝐑𝐄 - \" & IFERROR(XLOOKUP(\"Track Description\", $A$1:$AZ$1, INDEX($A:$AZ, ROW())), \"\"), \n    \" \", \n    IF(XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Artist: \" & XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & IF(XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \" & \" & XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Track Name: \" & XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(label_val<>\"\", NOT(is_whitelab)), \"Record label: \" & label_val, IFERROR(1/0)), \n    IF(XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Catalog Code: [\" & XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & \"]\", IFERROR(1/0)), \n    IF(XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Mastering: \" & XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Buy Link: \" & XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Release Date: \" & LET(d, XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IF(ISNUMBER(VALUE(d)), TEXT(VALUE(d), \"dd/mm/yyyy\"), d)), IFERROR(1/0)), \n    \" \", \n    IF(XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Tracklist:\" & CHAR(10) & XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow the artist(s):\", \n    IF(XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    IF(is_whitelab, IFERROR(1/0), \"Follow the label:\"), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow CRESCENT:\", \n    \"CRESCENT_SC_HANDLE\", \n    \"CRESCENT_BANDCAMP_URL\", \n    \"CRESCENT_INSTAGRAM_HANDLE\", \n    \"CRESCENT_YOUTUBE_URL\"\n  )\n)",
+            "Instagram Description": "==TEXTJOIN(CHAR(10), TRUE,\n  \"𝐏𝐑𝐄𝐌𝐈𝐄𝐑𝐄 - \" & IFERROR(XLOOKUP(\"Track Description\", $A$1:$AC$1, INDEX($A:$AC, ROW())), \"\"),\n  \" \",\n  IF(XLOOKUP(\"Artist 1 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Artist: \" & XLOOKUP(\"Artist 1 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\") & IF(XLOOKUP(\"Artist 2 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \" & \" & XLOOKUP(\"Artist 2 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Track Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Track Name: \" & XLOOKUP(\"Track Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Record Label\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Record label: \" & XLOOKUP(\"Record Label\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Catalog Number\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Catalog Code: [\" & XLOOKUP(\"Catalog Number\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\") & \"]\", IFERROR(1/0)),\n  IF(XLOOKUP(\"Mastering Credits\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Mastering: \" & XLOOKUP(\"Mastering Credits\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Buy Link\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Buy Link: \" & XLOOKUP(\"Buy Link\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Release Date\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Release Date: \" & LET(d, XLOOKUP(\"Release Date\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IF(ISNUMBER(VALUE(d)), TEXT(VALUE(d), \"dd/mm/yyyy\"), d)), IFERROR(1/0)),\n  \" \",\n  IF(XLOOKUP(\"Tracklist\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Tracklist:\" & CHAR(10) & XLOOKUP(\"Tracklist\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  \" \",\n  \"Follow the artist(s):\",\n  IF(XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"▪️ IG - @\" & XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"▪️ IG - @\" & XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  \" \",\n  \"Follow the label:\",\n  IF(XLOOKUP(\"Label Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"▪️ IG - @\" & XLOOKUP(\"Label Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  \" \",\n  \"CRESCENT_HASHTAGS\"\n)",
+            "Youtube Description": "==LET(\n  label_val, XLOOKUP(\"Record Label\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  is_whitelab, label_val = \"WHITELAB\",\n  hypeddit_url, XLOOKUP(\"Hypeddit URL\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  \n  TEXTJOIN(CHAR(10), TRUE, \n    IF(is_whitelab, \"FREE DOWNLOAD: \" & hypeddit_url, IFERROR(1/0)),\n    IF(is_whitelab, \" \", IFERROR(1/0)),\n    IF(is_whitelab, \"𝐖𝐇𝐈𝐓𝐄𝐋𝐀𝐁 \", \"\") & \"𝐏𝐑𝐄𝐌𝐈𝐄𝐑𝐄 - \" & IFERROR(XLOOKUP(\"Track Description\", $A$1:$AZ$1, INDEX($A:$AZ, ROW())), \"\"), \n    \" \", \n    IF(XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Artist: \" & XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & IF(XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \" & \" & XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Track Name: \" & XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(label_val<>\"\", NOT(is_whitelab)), \"Record label: \" & label_val, IFERROR(1/0)), \n    IF(XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Catalog Code: [\" & XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & \"]\", IFERROR(1/0)), \n    IF(XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Mastering: \" & XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Buy Link: \" & XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Release Date: \" & LET(d, XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IF(ISNUMBER(VALUE(d)), TEXT(VALUE(d), \"dd/mm/yyyy\"), d)), IFERROR(1/0)), \n    \" \", \n    IF(XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Tracklist:\" & CHAR(10) & XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow the artist(s):\", \n    IF(XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    IF(is_whitelab, IFERROR(1/0), \"Follow the label:\"), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow CRESCENT:\", \n    \"CRESCENT_SC_URL\", \n    \"CRESCENT_BANDCAMP_URL\", \n    \"CRESCENT_INSTAGRAM_URL\", \n    \"CRESCENT_YOUTUBE_URL\", \n    \" \", \n    \"#laburnum #futuregroove #techno #groovytechno #hardgroove #fastgroove #oldschooltechno #soundcloud #bandcamp #groove #minimalgroove #technomusic\"\n  )\n)",
+            "Assignee": "M'hamed",
+            "Channel": "Crescent",
+            "M'hamed Share": "==IF(AI11=\"M'hamed\",   IF(ISNUMBER(SEARCH(\"Option 1\", AH11)), 10,   IF(ISNUMBER(SEARCH(\"Option 2\", AH11)), 15,   IF(ISNUMBER(SEARCH(\"Whitelab\", AH11)),     IF(T11=\"Znzl Mastering\", 46, 15),   \"\"))), \"\")"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Track Name",
+              "displayName": "Track Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 1 Name",
+              "displayName": "Artist 1 Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 1 Instagram Handle",
+              "displayName": "Artist 1 Instagram Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 1 SoundCloud Handle",
+              "displayName": "Artist 1 SoundCloud Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 1 Email",
+              "displayName": "Artist 1 Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 2 Name",
+              "displayName": "Artist 2 Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 2 Instagram Handle",
+              "displayName": "Artist 2 Instagram Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 2 SoundCloud Handle",
+              "displayName": "Artist 2 SoundCloud Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artist 2 Email",
+              "displayName": "Artist 2 Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Record Label",
+              "displayName": "Record Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Label Instagram Handle",
+              "displayName": "Label Instagram Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Label SoundCloud Handle",
+              "displayName": "Label SoundCloud Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Requester Email",
+              "displayName": "Requester Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Other emails for calendar invites",
+              "displayName": "Other emails for calendar invites",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted at",
+              "displayName": "Submitted at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tracklist",
+              "displayName": "Tracklist",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Track Description",
+              "displayName": "Track Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Extract Timestamp",
+              "displayName": "Extract Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Release Date",
+              "displayName": "Release Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mastering Credits",
+              "displayName": "Mastering Credits",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artwork Credits",
+              "displayName": "Artwork Credits",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Catalog Number",
+              "displayName": "Catalog Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ISRC",
+              "displayName": "ISRC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Buy Link",
+              "displayName": "Buy Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Is Hypeddit?",
+              "displayName": "Is Hypeddit?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Additional SC To Follow",
+              "displayName": "Additional SC To Follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Additional IG To Follow",
+              "displayName": "Additional IG To Follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Premiere Date",
+              "displayName": "Premiere Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Track link",
+              "displayName": "Track link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Artwork link",
+              "displayName": "Artwork link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Soundcloud Description",
+              "displayName": "Soundcloud Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Youtube Description",
+              "displayName": "Youtube Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Instagram Description",
+              "displayName": "Instagram Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Option",
+              "displayName": "Option",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice",
+              "displayName": "Invoice",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Internal note",
+              "displayName": "Internal note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Drive URL",
+              "displayName": "Drive URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "SoundCloud URL",
+              "displayName": "SoundCloud URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Instagram URL",
+              "displayName": "Instagram URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tiktok URL",
+              "displayName": "Tiktok URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hypeddit URL",
+              "displayName": "Hypeddit URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "M'hamed Share",
+              "displayName": "M'hamed Share",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Channel",
+              "displayName": "Channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Internal payment status",
+              "displayName": "Internal payment status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "f4292d87-a210-4666-84d7-b6bbd24c23af",
+      "name": "Log to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        320,
+        3760
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "icVg0DsVssGHdHb2",
+          "name": "Laburnum"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $('Webhook (Form Submit)').item.json.body.product }}",
+              "value2": "Option 2 (GBP 30)"
+            }
+          ]
+        }
+      },
+      "id": "c2576470-4169-4426-aed4-68a52a26e0f0",
+      "name": "Check Price",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        560,
+        3760
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "success_url",
+              "value": "https://laburnum.netlify.app/success.html"
+            },
+            {
+              "name": "cancel_url",
+              "value": "https://laburnum.netlify.app/"
+            },
+            {
+              "name": "mode",
+              "value": "payment"
+            },
+            {
+              "name": "customer_email",
+              "value": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}"
+            },
+            {
+              "name": "metadata[trackName]",
+              "value": "={{ $('Webhook (Form Submit)').item.json.body.trackTitle }}"
+            },
+            {
+              "name": "line_items[0][price_data][currency]",
+              "value": "gbp"
+            },
+            {
+              "name": "line_items[0][price_data][unit_amount]",
+              "value": "3000"
+            },
+            {
+              "name": "line_items[0][price_data][product_data][name]",
+              "value": "Premiere - Option 2 (Full Package)"
+            },
+            {
+              "name": "line_items[0][quantity]",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dc51d60e-90de-4fb7-aa6c-b700a2d92115",
+      "name": "Stripe Session (£30)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        800,
+        3648
+      ],
+      "credentials": {
+        "stripeApi": {
+          "id": "CRESCENT_STRIPE_CREDENTIAL_ID",
+          "name": "Crescent Stripe"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "success_url",
+              "value": "https://laburnum.netlify.app/success.html"
+            },
+            {
+              "name": "cancel_url",
+              "value": "https://laburnum.netlify.app/"
+            },
+            {
+              "name": "mode",
+              "value": "payment"
+            },
+            {
+              "name": "customer_email",
+              "value": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}"
+            },
+            {
+              "name": "metadata[trackName]",
+              "value": "={{ $('Webhook (Form Submit)').item.json.body.trackTitle }}"
+            },
+            {
+              "name": "line_items[0][price_data][currency]",
+              "value": "gbp"
+            },
+            {
+              "name": "line_items[0][price_data][unit_amount]",
+              "value": "1700"
+            },
+            {
+              "name": "line_items[0][price_data][product_data][name]",
+              "value": "Premiere - Option 1 (Standard)"
+            },
+            {
+              "name": "line_items[0][quantity]",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ebe889aa-ba78-4e3f-90b0-75d8b96cc1f9",
+      "name": "Stripe Session (£17)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        800,
+        3856
+      ],
+      "credentials": {
+        "stripeApi": {
+          "id": "CRESCENT_STRIPE_CREDENTIAL_ID",
+          "name": "Crescent Stripe"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "events": [
+          "checkout.session.completed"
+        ]
+      },
+      "id": "1c17997a-7de2-4469-bd9e-d93b0e900a36",
+      "name": "Stripe Trigger",
+      "type": "n8n-nodes-base.stripeTrigger",
+      "typeVersion": 1,
+      "position": [
+        112,
+        4608
+      ],
+      "notesInFlow": true,
+      "webhookId": "b019359f-dd35-4d97-a35a-b7803a8356ee",
+      "credentials": {
+        "stripeApi": {
+          "id": "CRESCENT_STRIPE_CREDENTIAL_ID",
+          "name": "Crescent Stripe"
+        }
+      },
+      "notes": "Fires when user successfully pays"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Received",
+            "row_number": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Track Name",
+              "displayName": "Track Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 1 Name",
+              "displayName": "Artist 1 Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 1 Instagram Handle",
+              "displayName": "Artist 1 Instagram Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 1 SoundCloud Handle",
+              "displayName": "Artist 1 SoundCloud Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 1 Email",
+              "displayName": "Artist 1 Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 2 Name",
+              "displayName": "Artist 2 Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 2 Instagram Handle",
+              "displayName": "Artist 2 Instagram Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 2 SoundCloud Handle",
+              "displayName": "Artist 2 SoundCloud Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artist 2 Email",
+              "displayName": "Artist 2 Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Record Label",
+              "displayName": "Record Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Label Instagram Handle",
+              "displayName": "Label Instagram Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Label SoundCloud Handle",
+              "displayName": "Label SoundCloud Handle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Requester Email",
+              "displayName": "Requester Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Other emails for calendar invites",
+              "displayName": "Other emails for calendar invites",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Submitted at",
+              "displayName": "Submitted at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Tracklist",
+              "displayName": "Tracklist",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Track Description",
+              "displayName": "Track Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Extract Timestamp",
+              "displayName": "Extract Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Release Date",
+              "displayName": "Release Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Mastering Credits",
+              "displayName": "Mastering Credits",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artwork Credits",
+              "displayName": "Artwork Credits",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Catalog Number",
+              "displayName": "Catalog Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ISRC",
+              "displayName": "ISRC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Buy Link",
+              "displayName": "Buy Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Is Hypeddit?",
+              "displayName": "Is Hypeddit?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Additional SC To Follow",
+              "displayName": "Additional SC To Follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Additional IG To Follow",
+              "displayName": "Additional IG To Follow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Premiere Date",
+              "displayName": "Premiere Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Track link",
+              "displayName": "Track link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Artwork link",
+              "displayName": "Artwork link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Soundcloud Description",
+              "displayName": "Soundcloud Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Youtube Description",
+              "displayName": "Youtube Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Instagram Description",
+              "displayName": "Instagram Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Option",
+              "displayName": "Option",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice",
+              "displayName": "Invoice",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Internal note",
+              "displayName": "Internal note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Drive URL",
+              "displayName": "Drive URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "SoundCloud URL",
+              "displayName": "SoundCloud URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "YouTube URL",
+              "displayName": "YouTube URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Instagram URL",
+              "displayName": "Instagram URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Tiktok URL",
+              "displayName": "Tiktok URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "24ceb2d6-8b8c-4ff8-b174-5a6142378eb0",
+      "name": "Update Status to Received",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [
+        384,
+        4608
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "icVg0DsVssGHdHb2",
+          "name": "Laburnum"
+        }
+      },
+      "notes": "Matches by Track Name metadata"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"redirectUrl\": \"{{ $json.url }}\"\n}",
+        "options": {}
+      },
+      "id": "1c478e89-4621-4bea-9ef0-231b97834abe",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        3760
+      ],
+      "notesInFlow": true,
+      "notes": "Returns Stripe URL to Frontend JSON",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}",
+        "subject": "=Laburnūm Premiere ✦ {{ $('Webhook (Form Submit)').item.json.body.trackTitle }} scheduled",
+        "message": "=Hi, <br>\n<br>\n<br>Thank you for your submission! We have received all the requested information and sent you invites for the premiere time.\n<br><br>\nAfter checking everything is alright, we will schedule the publications and send you the links. \n<br>\nThanks for the music,<br>\nThe Laburnūm team ✦",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        3760
+      ],
+      "id": "a959f4a8-8193-4d4a-a62a-c5cb4ad40cc3",
+      "name": "Send a message",
+      "webhookId": "b0008e39-3704-4fba-820e-04f18612bb45",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CRESCENT_GMAIL_CREDENTIAL_ID",
+          "name": "Crescent Gmail"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "promo@laburnum.club",
+          "mode": "list",
+          "cachedResultName": "promo@laburnum.club"
+        },
+        "start": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T11:00:00",
+        "end": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T12:00:00",
+        "additionalFields": {
+          "attendees": [
+            "={{ [ $('Log to Sheets').item.json['Requester Email'], $('Log to Sheets').item.json['Artist 1 Email'], $('Log to Sheets').item.json['Artist 2 Email'], $('Log to Sheets').item.json['Other emails for calendar invites'] ].filter(e => typeof e === 'string' && e.trim() !== '').join(',') }}"
+          ],
+          "description": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}",
+          "guestsCanInviteOthers": true,
+          "sendUpdates": "all",
+          "summary": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1328,
+        3760
+      ],
+      "id": "8c9796a5-938c-4ef5-bff4-b9cac411daed",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "CRESCENT_CALENDAR_CREDENTIAL_ID",
+          "name": "Crescent Calendar"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "promo@laburnum.club",
+          "mode": "list",
+          "cachedResultName": "promo@laburnum.club"
+        },
+        "start": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T11:00:00",
+        "end": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T12:00:00",
+        "additionalFields": {
+          "attendees": [
+            "znzlmusic@gmail.com",
+            "hello@laburnum.club"
+          ],
+          "description": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}",
+          "guestsCanInviteOthers": true,
+          "sendUpdates": "all",
+          "summary": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1840,
+        3760
+      ],
+      "id": "2c59c7db-db6e-4fbe-a6df-3b1bec14b1ac",
+      "name": "Internal event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "CRESCENT_CALENDAR_CREDENTIAL_ID",
+          "name": "Crescent Calendar"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Webhook (Form Submit)": {
+      "main": [
+        [
+          {
+            "node": "Create Folder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Context",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Create Folder": {
+      "main": [
+        [
+          {
+            "node": "Merge Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Context": {
+      "main": [
+        [
+          {
+            "node": "Upload Audio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload Artwork",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Audio": {
+      "main": [
+        [
+          {
+            "node": "Merge Uploads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Artwork": {
+      "main": [
+        [
+          {
+            "node": "Merge Uploads",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Uploads": {
+      "main": [
+        [
+          {
+            "node": "Log to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Sheets": {
+      "main": [
+        [
+          {
+            "node": "Check Price",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Price": {
+      "main": [
+        [
+          {
+            "node": "Stripe Session (£30)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stripe Session (£17)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Session (£30)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Session (£17)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Trigger": {
+      "main": [
+        [
+          {
+            "node": "Update Status to Received",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status to Received": {
+      "main": [
+        []
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Internal event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "activeVersionId": "4218dfe8-4c2e-4845-bc84-bf234594b22f",
+  "versionCounter": 378,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-02-11T18:48:16.620Z",
+      "createdAt": "2026-02-11T18:48:16.620Z",
+      "role": "workflow:owner",
+      "workflowId": "bvfKE4eZYBKxUvxY",
+      "projectId": "Fw6wcib4C4PcPpGx",
+      "project": {
+        "updatedAt": "2025-09-17T08:01:26.948Z",
+        "createdAt": "2025-06-29T17:50:18.168Z",
+        "id": "Fw6wcib4C4PcPpGx",
+        "name": "M'hamed Ouzahra <znzlmusic@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "774b8cc8-e119-46da-86e5-8490f89c17ae"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-05T08:01:09.000Z",
+    "createdAt": "2026-05-05T08:01:05.898Z",
+    "versionId": "4218dfe8-4c2e-4845-bc84-bf234594b22f",
+    "workflowId": "bvfKE4eZYBKxUvxY",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "submit-premiere",
+          "responseMode": "responseNode",
+          "options": {
+            "binaryData": false
+          }
+        },
+        "id": "faa3f054-1ea9-4c5c-a98a-4011ef4d332f",
+        "name": "Webhook (Form Submit)",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          -800,
+          3760
+        ],
+        "notesInFlow": true,
+        "webhookId": "361ad46b-32c0-4e18-a07f-67d7f9134125",
+        "notes": "Receives FormData"
+      },
+      {
+        "parameters": {
+          "resource": "folder",
+          "name": "={{ $json.body.premiereDate.replaceAll('-', '') }} - {{ $json.body.artist1Name }} - {{ $json.body.trackTitle }} ({{ $json.body.catalogNumber }})",
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1l76Pa7zk8S9zfGOfwrBe57iZVlnoDvgh",
+            "mode": "list",
+            "cachedResultName": "01. Incoming",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1l76Pa7zk8S9zfGOfwrBe57iZVlnoDvgh"
+          },
+          "options": {}
+        },
+        "id": "51023570-d858-409e-a389-1b44de21d9fe",
+        "name": "Create Folder",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -576,
+          3696
+        ],
+        "notesInFlow": true,
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "5ws9gkeaNmvhs7GO",
+            "name": "Laburnum"
+          }
+        },
+        "notes": "Creates Folder"
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "id": "231889ad-9598-497c-934a-c965225c1d67",
+        "name": "Merge Context",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          -352,
+          3760
+        ],
+        "notesInFlow": true,
+        "notes": "Combines Folder ID + Files"
+      },
+      {
+        "parameters": {
+          "inputDataFieldName": "audioFile",
+          "name": "={{ $json.body.artist1Name }} - {{ $json.body.trackTitle }} (Audio) - {{ $json.body.extractTimestamp }}.{{ $binary.audioFile.fileExtension }}",
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $('Create Folder').item.json.id }}",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "131ddb8b-b693-48b9-80d7-57871258e00d",
+        "name": "Upload Audio",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -128,
+          3664
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "5ws9gkeaNmvhs7GO",
+            "name": "Laburnum"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "inputDataFieldName": "artworkFile",
+          "name": "={{ $('Webhook (Form Submit)').item.json.body.artist1Name }} - {{ $('Webhook (Form Submit)').item.json.body.trackTitle }} (Artwork).{{ $binary.artworkFile.fileExtension }}",
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $('Create Folder').item.json.id }}",
+            "mode": "id"
+          },
+          "options": {}
+        },
+        "id": "e33cf8fd-90fe-4b0e-913f-61fa08213723",
+        "name": "Upload Artwork",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          -128,
+          3856
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "5ws9gkeaNmvhs7GO",
+            "name": "Laburnum"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "combine",
+          "combineBy": "combineByPosition",
+          "options": {}
+        },
+        "id": "bb5236be-ffac-40b5-8e24-09f6824e5f78",
+        "name": "Merge Uploads",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          96,
+          3760
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w",
+            "mode": "list",
+            "cachedResultName": "Pipeline",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Database",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Track Name": "={{ $('Webhook (Form Submit)').item.json.body.trackTitle }}",
+              "Artist 1 Name": "={{ $('Webhook (Form Submit)').item.json.body.artist1Name }}",
+              "Artist 1 Instagram Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist1IG || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+              "Artist 1 SoundCloud Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist1SC || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+              "Artist 1 Email": "={{ $('Webhook (Form Submit)').item.json.body.artist1Email }}",
+              "Artist 2 Name": "={{ $('Webhook (Form Submit)').item.json.body.artist2Name }}",
+              "Artist 2 Instagram Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist2IG || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+              "Artist 2 SoundCloud Handle": "={{ ($('Webhook (Form Submit)').item.json.body.artist2SC || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+              "Artist 2 Email": "={{ $('Webhook (Form Submit)').item.json.body.artist2Email }}",
+              "Record Label": "={{ $('Webhook (Form Submit)').item.json.body.labelName }}",
+              "Label Instagram Handle": "={{ ($('Webhook (Form Submit)').item.json.body.labelIG || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+              "Label SoundCloud Handle": "={{ ($('Webhook (Form Submit)').item.json.body.labelSC || '').replace(/^@/, '').replace(/^https?:\\/\\/[^\\/]+\\//, '').replace(/\\/$/, '') }}",
+              "Requester Email": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}",
+              "Other emails for calendar invites": "={{ $('Webhook (Form Submit)').item.json.body.calendarEmails }}",
+              "Submitted at": "={{ new Date().toISOString() }}",
+              "Tracklist": "={{ $('Webhook (Form Submit)').item.json.body.tracklist }}",
+              "Track Description": "={{ $('Webhook (Form Submit)').item.json.body.description }}",
+              "Release Date": "={{ $('Webhook (Form Submit)').item.json.body.releaseDate }}",
+              "Mastering Credits": "={{ $('Webhook (Form Submit)').item.json.body.masteringCredits }}",
+              "Artwork Credits": "={{ $('Webhook (Form Submit)').item.json.body.artworkCredits }}",
+              "Catalog Number": "={{ $('Webhook (Form Submit)').item.json.body.catalogNumber }}",
+              "ISRC": "={{ $('Webhook (Form Submit)').item.json.body.isrc }}",
+              "Buy Link": "={{ $('Webhook (Form Submit)').item.json.body.buyLink }}",
+              "Is Hypeddit?": "={{ $('Webhook (Form Submit)').item.json.body.isHypeddit }}",
+              "Additional SC To Follow": "={{ $('Webhook (Form Submit)').item.json.body.additionalSC }}",
+              "Additional IG To Follow": "={{ $('Webhook (Form Submit)').item.json.body.additionalIG }}",
+              "Premiere Date": "={{ $('Webhook (Form Submit)').item.json.body.premiereDate }}",
+              "Track link": "={{ $('Upload Audio').item.json.webViewLink }}",
+              "Artwork link": "={{ $('Upload Artwork').item.json.webViewLink }}",
+              "Option": "={{ $('Webhook (Form Submit)').item.json.body.product }}",
+              "Status": "Requested",
+              "Drive URL": "=https://drive.google.com/drive/folders/{{ $('Create Folder').item.json.id }}",
+              "Extract Timestamp": "={{ $('Webhook (Form Submit)').item.json.body.extractTimestamp }}",
+              "Soundcloud Description": "==LET(\n  label_val, XLOOKUP(\"Record Label\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  is_whitelab, label_val = \"WHITELAB\",\n  hypeddit_url, XLOOKUP(\"Hypeddit URL\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  \n  TEXTJOIN(CHAR(10), TRUE, \n    IF(is_whitelab, \"FREE DOWNLOAD: \" & hypeddit_url, IFERROR(1/0)),\n    IF(is_whitelab, \" \", IFERROR(1/0)),\n    IF(is_whitelab, \"𝐖𝐇𝐈𝐓𝐄𝐋𝐀𝐁 \", \"\") & \"𝐏𝐑𝐄𝐌𝐈𝐄𝐑𝐄 - \" & IFERROR(XLOOKUP(\"Track Description\", $A$1:$AZ$1, INDEX($A:$AZ, ROW())), \"\"), \n    \" \", \n    IF(XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Artist: \" & XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & IF(XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \" & \" & XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Track Name: \" & XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(label_val<>\"\", NOT(is_whitelab)), \"Record label: \" & label_val, IFERROR(1/0)), \n    IF(XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Catalog Code: [\" & XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & \"]\", IFERROR(1/0)), \n    IF(XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Mastering: \" & XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Buy Link: \" & XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Release Date: \" & LET(d, XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IF(ISNUMBER(VALUE(d)), TEXT(VALUE(d), \"dd/mm/yyyy\"), d)), IFERROR(1/0)), \n    \" \", \n    IF(XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Tracklist:\" & CHAR(10) & XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow the artist(s):\", \n    IF(XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    IF(is_whitelab, IFERROR(1/0), \"Follow the label:\"), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow LABURNŪM:\", \n    \"@laburnum-records\", \n    \"www.laburnum-records.bandcamp.com\", \n    \"www.instagram.com/laburnum.records\", \n    \"www.youtube.com/@LABURNUM-Records\"\n  )\n)",
+              "Instagram Description": "==TEXTJOIN(CHAR(10), TRUE,\n  \"𝐏𝐑𝐄𝐌𝐈𝐄𝐑𝐄 - \" & IFERROR(XLOOKUP(\"Track Description\", $A$1:$AC$1, INDEX($A:$AC, ROW())), \"\"),\n  \" \",\n  IF(XLOOKUP(\"Artist 1 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Artist: \" & XLOOKUP(\"Artist 1 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\") & IF(XLOOKUP(\"Artist 2 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \" & \" & XLOOKUP(\"Artist 2 Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Track Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Track Name: \" & XLOOKUP(\"Track Name\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Record Label\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Record label: \" & XLOOKUP(\"Record Label\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Catalog Number\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Catalog Code: [\" & XLOOKUP(\"Catalog Number\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\") & \"]\", IFERROR(1/0)),\n  IF(XLOOKUP(\"Mastering Credits\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Mastering: \" & XLOOKUP(\"Mastering Credits\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Buy Link\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Buy Link: \" & XLOOKUP(\"Buy Link\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Release Date\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Release Date: \" & LET(d, XLOOKUP(\"Release Date\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IF(ISNUMBER(VALUE(d)), TEXT(VALUE(d), \"dd/mm/yyyy\"), d)), IFERROR(1/0)),\n  \" \",\n  IF(XLOOKUP(\"Tracklist\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"Tracklist:\" & CHAR(10) & XLOOKUP(\"Tracklist\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  \" \",\n  \"Follow the artist(s):\",\n  IF(XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"▪️ IG - @\" & XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  IF(XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"▪️ IG - @\" & XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  \" \",\n  \"Follow the label:\",\n  IF(XLOOKUP(\"Label Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\")<>\"\", \"▪️ IG - @\" & XLOOKUP(\"Label Instagram Handle\", $A$1:$AC$1, INDEX($A:$AC, ROW()), \"\"), IFERROR(1/0)),\n  \" \",\n  \"#laburnum #futuregroove #techno\"\n)",
+              "Youtube Description": "==LET(\n  label_val, XLOOKUP(\"Record Label\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  is_whitelab, label_val = \"WHITELAB\",\n  hypeddit_url, XLOOKUP(\"Hypeddit URL\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"),\n  \n  TEXTJOIN(CHAR(10), TRUE, \n    IF(is_whitelab, \"FREE DOWNLOAD: \" & hypeddit_url, IFERROR(1/0)),\n    IF(is_whitelab, \" \", IFERROR(1/0)),\n    IF(is_whitelab, \"𝐖𝐇𝐈𝐓𝐄𝐋𝐀𝐁 \", \"\") & \"𝐏𝐑𝐄𝐌𝐈𝐄𝐑𝐄 - \" & IFERROR(XLOOKUP(\"Track Description\", $A$1:$AZ$1, INDEX($A:$AZ, ROW())), \"\"), \n    \" \", \n    IF(XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Artist: \" & XLOOKUP(\"Artist 1 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & IF(XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \" & \" & XLOOKUP(\"Artist 2 Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Track Name: \" & XLOOKUP(\"Track Name\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(label_val<>\"\", NOT(is_whitelab)), \"Record label: \" & label_val, IFERROR(1/0)), \n    IF(XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Catalog Code: [\" & XLOOKUP(\"Catalog Number\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\") & \"]\", IFERROR(1/0)), \n    IF(XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Mastering: \" & XLOOKUP(\"Mastering Credits\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Buy Link: \" & XLOOKUP(\"Buy Link\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Release Date: \" & LET(d, XLOOKUP(\"Release Date\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IF(ISNUMBER(VALUE(d)), TEXT(VALUE(d), \"dd/mm/yyyy\"), d)), IFERROR(1/0)), \n    \" \", \n    IF(XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"Tracklist:\" & CHAR(10) & XLOOKUP(\"Tracklist\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow the artist(s):\", \n    IF(XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 1 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Artist 2 Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 1 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\", \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Artist 2 SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    IF(is_whitelab, IFERROR(1/0), \"Follow the label:\"), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ IG - https://www.instagram.com/\" & XLOOKUP(\"Label Instagram Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    IF(AND(NOT(is_whitelab), XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\")<>\"\"), \"▪️ SC - https://soundcloud.com/\" & XLOOKUP(\"Label SoundCloud Handle\", $A$1:$AZ$1, INDEX($A:$AZ, ROW()), \"\"), IFERROR(1/0)), \n    \" \", \n    \"Follow LABURNŪM:\", \n    \"https://soundcloud.com/laburnum-records\", \n    \"https://laburnum-records.bandcamp.com\", \n    \"https://www.instagram.com/laburnum.records\", \n    \"https://www.youtube.com/@LABURNUM-Records\", \n    \" \", \n    \"#laburnum #futuregroove #techno #groovytechno #hardgroove #fastgroove #oldschooltechno #soundcloud #bandcamp #groove #minimalgroove #technomusic\"\n  )\n)",
+              "Assignee": "M'hamed",
+              "Channel": "Laburnūm",
+              "M'hamed Share": "==IF(AI11=\"M'hamed\",   IF(ISNUMBER(SEARCH(\"Option 1\", AH11)), 10,   IF(ISNUMBER(SEARCH(\"Option 2\", AH11)), 15,   IF(ISNUMBER(SEARCH(\"Whitelab\", AH11)),     IF(T11=\"Znzl Mastering\", 46, 15),   \"\"))), \"\")"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Track Name",
+                "displayName": "Track Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 1 Name",
+                "displayName": "Artist 1 Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 1 Instagram Handle",
+                "displayName": "Artist 1 Instagram Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 1 SoundCloud Handle",
+                "displayName": "Artist 1 SoundCloud Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 1 Email",
+                "displayName": "Artist 1 Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 2 Name",
+                "displayName": "Artist 2 Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 2 Instagram Handle",
+                "displayName": "Artist 2 Instagram Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 2 SoundCloud Handle",
+                "displayName": "Artist 2 SoundCloud Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artist 2 Email",
+                "displayName": "Artist 2 Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Record Label",
+                "displayName": "Record Label",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Label Instagram Handle",
+                "displayName": "Label Instagram Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Label SoundCloud Handle",
+                "displayName": "Label SoundCloud Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Requester Email",
+                "displayName": "Requester Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Other emails for calendar invites",
+                "displayName": "Other emails for calendar invites",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Submitted at",
+                "displayName": "Submitted at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Tracklist",
+                "displayName": "Tracklist",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Track Description",
+                "displayName": "Track Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Extract Timestamp",
+                "displayName": "Extract Timestamp",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Release Date",
+                "displayName": "Release Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Mastering Credits",
+                "displayName": "Mastering Credits",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artwork Credits",
+                "displayName": "Artwork Credits",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Catalog Number",
+                "displayName": "Catalog Number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "ISRC",
+                "displayName": "ISRC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Buy Link",
+                "displayName": "Buy Link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Is Hypeddit?",
+                "displayName": "Is Hypeddit?",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Additional SC To Follow",
+                "displayName": "Additional SC To Follow",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Additional IG To Follow",
+                "displayName": "Additional IG To Follow",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Premiere Date",
+                "displayName": "Premiere Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Track link",
+                "displayName": "Track link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Artwork link",
+                "displayName": "Artwork link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Soundcloud Description",
+                "displayName": "Soundcloud Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Youtube Description",
+                "displayName": "Youtube Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Instagram Description",
+                "displayName": "Instagram Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Option",
+                "displayName": "Option",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Assignee",
+                "displayName": "Assignee",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Invoice",
+                "displayName": "Invoice",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Internal note",
+                "displayName": "Internal note",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Drive URL",
+                "displayName": "Drive URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "SoundCloud URL",
+                "displayName": "SoundCloud URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "YouTube URL",
+                "displayName": "YouTube URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Instagram URL",
+                "displayName": "Instagram URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Tiktok URL",
+                "displayName": "Tiktok URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Hypeddit URL",
+                "displayName": "Hypeddit URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "M'hamed Share",
+                "displayName": "M'hamed Share",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Channel",
+                "displayName": "Channel",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Internal payment status",
+                "displayName": "Internal payment status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {
+            "cellFormat": "USER_ENTERED"
+          }
+        },
+        "id": "f4292d87-a210-4666-84d7-b6bbd24c23af",
+        "name": "Log to Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4,
+        "position": [
+          320,
+          3760
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "icVg0DsVssGHdHb2",
+            "name": "Laburnum"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $('Webhook (Form Submit)').item.json.body.product }}",
+                "value2": "Option 2 (GBP 30)"
+              }
+            ]
+          }
+        },
+        "id": "c2576470-4169-4426-aed4-68a52a26e0f0",
+        "name": "Check Price",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          560,
+          3760
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.stripe.com/v1/checkout/sessions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "stripeApi",
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "success_url",
+                "value": "https://laburnum.netlify.app/success.html"
+              },
+              {
+                "name": "cancel_url",
+                "value": "https://laburnum.netlify.app/"
+              },
+              {
+                "name": "mode",
+                "value": "payment"
+              },
+              {
+                "name": "customer_email",
+                "value": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}"
+              },
+              {
+                "name": "metadata[trackName]",
+                "value": "={{ $('Webhook (Form Submit)').item.json.body.trackTitle }}"
+              },
+              {
+                "name": "line_items[0][price_data][currency]",
+                "value": "gbp"
+              },
+              {
+                "name": "line_items[0][price_data][unit_amount]",
+                "value": "3000"
+              },
+              {
+                "name": "line_items[0][price_data][product_data][name]",
+                "value": "Premiere - Option 2 (Full Package)"
+              },
+              {
+                "name": "line_items[0][quantity]",
+                "value": "1"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "dc51d60e-90de-4fb7-aa6c-b700a2d92115",
+        "name": "Stripe Session (£30)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          800,
+          3648
+        ],
+        "credentials": {
+          "stripeApi": {
+            "id": "AIxL5l7OuFv6aSyr",
+            "name": "Stripe account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.stripe.com/v1/checkout/sessions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "stripeApi",
+          "sendBody": true,
+          "contentType": "form-urlencoded",
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "success_url",
+                "value": "https://laburnum.netlify.app/success.html"
+              },
+              {
+                "name": "cancel_url",
+                "value": "https://laburnum.netlify.app/"
+              },
+              {
+                "name": "mode",
+                "value": "payment"
+              },
+              {
+                "name": "customer_email",
+                "value": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}"
+              },
+              {
+                "name": "metadata[trackName]",
+                "value": "={{ $('Webhook (Form Submit)').item.json.body.trackTitle }}"
+              },
+              {
+                "name": "line_items[0][price_data][currency]",
+                "value": "gbp"
+              },
+              {
+                "name": "line_items[0][price_data][unit_amount]",
+                "value": "1700"
+              },
+              {
+                "name": "line_items[0][price_data][product_data][name]",
+                "value": "Premiere - Option 1 (Standard)"
+              },
+              {
+                "name": "line_items[0][quantity]",
+                "value": "1"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ebe889aa-ba78-4e3f-90b0-75d8b96cc1f9",
+        "name": "Stripe Session (£17)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          800,
+          3856
+        ],
+        "credentials": {
+          "stripeApi": {
+            "id": "AIxL5l7OuFv6aSyr",
+            "name": "Stripe account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "events": [
+            "checkout.session.completed"
+          ]
+        },
+        "id": "1c17997a-7de2-4469-bd9e-d93b0e900a36",
+        "name": "Stripe Trigger",
+        "type": "n8n-nodes-base.stripeTrigger",
+        "typeVersion": 1,
+        "position": [
+          112,
+          4608
+        ],
+        "notesInFlow": true,
+        "webhookId": "b019359f-dd35-4d97-a35a-b7803a8356ee",
+        "credentials": {
+          "stripeApi": {
+            "id": "AIxL5l7OuFv6aSyr",
+            "name": "Stripe account"
+          }
+        },
+        "notes": "Fires when user successfully pays"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "11YFhwPf-0rkhqoSpAhCe5OGrp_WoyMvilfiCrqny52w",
+            "mode": "list"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Status": "Received",
+              "row_number": 0
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Track Name",
+                "displayName": "Track Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 1 Name",
+                "displayName": "Artist 1 Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 1 Instagram Handle",
+                "displayName": "Artist 1 Instagram Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 1 SoundCloud Handle",
+                "displayName": "Artist 1 SoundCloud Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 1 Email",
+                "displayName": "Artist 1 Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 2 Name",
+                "displayName": "Artist 2 Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 2 Instagram Handle",
+                "displayName": "Artist 2 Instagram Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 2 SoundCloud Handle",
+                "displayName": "Artist 2 SoundCloud Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artist 2 Email",
+                "displayName": "Artist 2 Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Record Label",
+                "displayName": "Record Label",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Label Instagram Handle",
+                "displayName": "Label Instagram Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Label SoundCloud Handle",
+                "displayName": "Label SoundCloud Handle",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Requester Email",
+                "displayName": "Requester Email",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Other emails for calendar invites",
+                "displayName": "Other emails for calendar invites",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Submitted at",
+                "displayName": "Submitted at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Tracklist",
+                "displayName": "Tracklist",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Track Description",
+                "displayName": "Track Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Extract Timestamp",
+                "displayName": "Extract Timestamp",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Release Date",
+                "displayName": "Release Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Mastering Credits",
+                "displayName": "Mastering Credits",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artwork Credits",
+                "displayName": "Artwork Credits",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Catalog Number",
+                "displayName": "Catalog Number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "ISRC",
+                "displayName": "ISRC",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Buy Link",
+                "displayName": "Buy Link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Is Hypeddit?",
+                "displayName": "Is Hypeddit?",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Additional SC To Follow",
+                "displayName": "Additional SC To Follow",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Additional IG To Follow",
+                "displayName": "Additional IG To Follow",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Premiere Date",
+                "displayName": "Premiere Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Track link",
+                "displayName": "Track link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Artwork link",
+                "displayName": "Artwork link",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Soundcloud Description",
+                "displayName": "Soundcloud Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Youtube Description",
+                "displayName": "Youtube Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Instagram Description",
+                "displayName": "Instagram Description",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Option",
+                "displayName": "Option",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Assignee",
+                "displayName": "Assignee",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Invoice",
+                "displayName": "Invoice",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Internal note",
+                "displayName": "Internal note",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Drive URL",
+                "displayName": "Drive URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "SoundCloud URL",
+                "displayName": "SoundCloud URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "YouTube URL",
+                "displayName": "YouTube URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Instagram URL",
+                "displayName": "Instagram URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Tiktok URL",
+                "displayName": "Tiktok URL",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "24ceb2d6-8b8c-4ff8-b174-5a6142378eb0",
+        "name": "Update Status to Received",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4,
+        "position": [
+          384,
+          4608
+        ],
+        "notesInFlow": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "icVg0DsVssGHdHb2",
+            "name": "Laburnum"
+          }
+        },
+        "notes": "Matches by Track Name metadata"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"redirectUrl\": \"{{ $json.url }}\"\n}",
+          "options": {}
+        },
+        "id": "1c478e89-4621-4bea-9ef0-231b97834abe",
+        "name": "Respond to Webhook",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [
+          1072,
+          3760
+        ],
+        "notesInFlow": true,
+        "notes": "Returns Stripe URL to Frontend JSON"
+      },
+      {
+        "parameters": {
+          "sendTo": "={{ $('Webhook (Form Submit)').item.json.body.requesterEmail }}",
+          "subject": "=Laburnūm Premiere ✦ {{ $('Webhook (Form Submit)').item.json.body.trackTitle }} scheduled",
+          "message": "=Hi, <br>\n<br>\n<br>Thank you for your submission! We have received all the requested information and sent you invites for the premiere time.\n<br><br>\nAfter checking everything is alright, we will schedule the publications and send you the links. \n<br>\nThanks for the music,<br>\nThe Laburnūm team ✦",
+          "options": {
+            "appendAttribution": false
+          }
+        },
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.2,
+        "position": [
+          1584,
+          3760
+        ],
+        "id": "a959f4a8-8193-4d4a-a62a-c5cb4ad40cc3",
+        "name": "Send a message",
+        "webhookId": "b0008e39-3704-4fba-820e-04f18612bb45",
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "h329t6NmiXnebgT5",
+            "name": "Laburnum"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "calendar": {
+            "__rl": true,
+            "value": "promo@laburnum.club",
+            "mode": "list",
+            "cachedResultName": "promo@laburnum.club"
+          },
+          "start": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T11:00:00",
+          "end": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T12:00:00",
+          "additionalFields": {
+            "attendees": [
+              "={{ [ $('Log to Sheets').item.json['Requester Email'], $('Log to Sheets').item.json['Artist 1 Email'], $('Log to Sheets').item.json['Artist 2 Email'], $('Log to Sheets').item.json['Other emails for calendar invites'] ].filter(e => typeof e === 'string' && e.trim() !== '').join(',') }}"
+            ],
+            "description": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}",
+            "guestsCanInviteOthers": true,
+            "sendUpdates": "all",
+            "summary": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1.3,
+        "position": [
+          1328,
+          3760
+        ],
+        "id": "8c9796a5-938c-4ef5-bff4-b9cac411daed",
+        "name": "Create an event",
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "MOiNUocCMOXmo5hc",
+            "name": "Laburnum"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "calendar": {
+            "__rl": true,
+            "value": "promo@laburnum.club",
+            "mode": "list",
+            "cachedResultName": "promo@laburnum.club"
+          },
+          "start": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T11:00:00",
+          "end": "={{ $('Log to Sheets').item.json['Premiere Date'] }}T12:00:00",
+          "additionalFields": {
+            "attendees": [
+              "znzlmusic@gmail.com",
+              "hello@laburnum.club"
+            ],
+            "description": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}",
+            "guestsCanInviteOthers": true,
+            "sendUpdates": "all",
+            "summary": "=Laburnūm Premiere ✦ {{ $('Log to Sheets').item.json['Track Name'] }} on {{ $('Log to Sheets').item.json['Record Label'] }}"
+          }
+        },
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1.3,
+        "position": [
+          1840,
+          3760
+        ],
+        "id": "2c59c7db-db6e-4fbe-a6df-3b1bec14b1ac",
+        "name": "Internal event",
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "MOiNUocCMOXmo5hc",
+            "name": "Laburnum"
+          }
+        },
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "Webhook (Form Submit)": {
+        "main": [
+          [
+            {
+              "node": "Create Folder",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Merge Context",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Create Folder": {
+        "main": [
+          [
+            {
+              "node": "Merge Context",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge Context": {
+        "main": [
+          [
+            {
+              "node": "Upload Audio",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Upload Artwork",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload Audio": {
+        "main": [
+          [
+            {
+              "node": "Merge Uploads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Upload Artwork": {
+        "main": [
+          [
+            {
+              "node": "Merge Uploads",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge Uploads": {
+        "main": [
+          [
+            {
+              "node": "Log to Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log to Sheets": {
+        "main": [
+          [
+            {
+              "node": "Check Price",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Check Price": {
+        "main": [
+          [
+            {
+              "node": "Stripe Session (£30)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stripe Session (£17)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Stripe Session (£30)": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Stripe Session (£17)": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Stripe Trigger": {
+        "main": [
+          [
+            {
+              "node": "Update Status to Received",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update Status to Received": {
+        "main": [
+          []
+        ]
+      },
+      "Respond to Webhook": {
+        "main": [
+          [
+            {
+              "node": "Create an event",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send a message": {
+        "main": [
+          [
+            {
+              "node": "Internal event",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create an event": {
+        "main": [
+          [
+            {
+              "node": "Send a message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "M'hamed Ouzahra",
+    "name": "Version 4218dfe8",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-05T08:01:09.794Z",
+        "id": 124,
+        "workflowId": "bvfKE4eZYBKxUvxY",
+        "versionId": "4218dfe8-4c2e-4845-bc84-bf234594b22f",
+        "event": "activated",
+        "userId": "774b8cc8-e119-46da-86e5-8490f89c17ae"
+      }
+    ]
+  }
+}
